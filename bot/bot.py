@@ -4,6 +4,7 @@ from database import cursor, conn
 from config import BOT_TOKEN
 
 
+# ---------------- COMMANDS ----------------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
 
@@ -20,12 +21,13 @@ async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("System Running ✅")
 
 
-def run_bot():
-    app = Application.builder().token(BOT_TOKEN).build()
+# ---------------- BOT FACTORY ----------------
+def run_bot_app():
+    application = Application.builder().token(BOT_TOKEN).build()
 
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("status", status))
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("status", status))
 
-    print("Bot started...")
+    print("Bot initialized...")
 
-    app.run_polling(drop_pending_updates=True)
+    return application
