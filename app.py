@@ -2,12 +2,12 @@ import os
 import asyncio
 from flask import Flask, request, jsonify
 
+from bot.bot import run_bot_app
 from trading.master_engine import execute_trade
-from bot.bot import run_bot_app  # IMPORTANT CHANGE
 
 app = Flask(__name__)
 
-
+# ---------------- FLASK ----------------
 @app.route("/")
 def home():
     return "Copy Trading System Active 🚀"
@@ -26,17 +26,18 @@ def trade():
     ))
 
 
+# ---------------- TELEGRAM BOT ----------------
 async def start_bot():
-    bot_app = run_bot_app()
-    await bot_app.initialize()
-    await bot_app.start()
-    await bot_app.updater.start_polling()
-    await bot_app.updater.idle()
+    application = run_bot_app()
+
+    await application.initialize()
+    await application.start()
+    await application.updater.start_polling()
+    await application.updater.idle()
 
 
+# ---------------- MAIN ----------------
 if __name__ == "__main__":
-
-    # run bot safely in event loop
     loop = asyncio.get_event_loop()
     loop.create_task(start_bot())
 
