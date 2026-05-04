@@ -1,5 +1,4 @@
 import os
-import asyncio
 from flask import Flask, request, jsonify
 
 from bot.bot import run_bot_app
@@ -26,20 +25,23 @@ def trade():
     ))
 
 
-# ---------------- TELEGRAM BOT ----------------
-async def start_bot():
+# ---------------- START BOT ----------------
+def start_bot():
     application = run_bot_app()
 
-    await application.initialize()
-    await application.start()
-    await application.updater.start_polling()
-    await application.updater.idle()
+    # SAFE blocking call (DO NOT use asyncio here)
+    application.run_polling(drop_pending_updates=True)
 
 
 # ---------------- MAIN ----------------
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.create_task(start_bot())
+    import threading
 
+    # Run bot in background thread
+    bot_thread = threading.Thread(target=start_bot)
+    bot_thread.daemon = True
+    bot_thread.start()
+
+    # Run Flask normally
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
