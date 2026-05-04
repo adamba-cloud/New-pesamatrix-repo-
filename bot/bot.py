@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 from database import cursor, conn
-from config import BOT_TOKEN, ADMIN_ID
+from config import BOT_TOKEN
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -27,4 +27,5 @@ def run_bot():
     app.add_handler(CommandHandler("status", status))
 
     print("Bot started...")
-    app.run_polling()
+
+    app.run_polling(drop_pending_updates=True)
